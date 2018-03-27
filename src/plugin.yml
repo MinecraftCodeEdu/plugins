@@ -1,9 +1,0 @@
-name: GoldMine
-version: 1.01
-main: com.mateatdang.goldmine.GoldMine
-
-commands:
-  start:
-    description: "보물찾기 게임을 시작합니다."
-  peace:
-    description: "난이도를 평화로움으로 변경합니다."
