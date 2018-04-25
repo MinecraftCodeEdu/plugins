@@ -1,15 +1,14 @@
-name: Coalab
-version: 1.02
-main: com.mateatdang.coalab.Coalab
+name: Coala
+version: 1.0
+main: com.coala.coalaplugin.Main
 
 commands:
-  compass:
-    description: "동서납북 방향을 표시합니다."
-  forward:
-    description: "현재 바라보는 방향으로 전진합니다."
-  start:
-    description: "보물찾기 게임을 시작합니다."
-  peace:
-    description: "난이도를 평화로움으로 변경합니다."
   clean:
     description: "플레이어 주변을 청소합니다."
+  event:
+    description: "이벤트 처리를 활성화/비활성화 합니다."
+  move:
+    description: "해당 월드로 이동합니다."
+    aliases: ["이동"]
+  start:
+    description: "게임을 시작합니다."
