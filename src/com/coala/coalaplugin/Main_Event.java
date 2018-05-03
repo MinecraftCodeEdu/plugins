@@ -109,7 +109,7 @@ public class Main_Event implements Listener {
 	    	event.getPlayer().teleport(ConfigWorld.getWorld().getSpawnLocation());
 			world.setStorm(false);
 			world.setTime(6000);
-			world.setDifficulty(Difficulty.PEACEFUL);
+			world.setDifficulty(Difficulty.NORMAL);
 	    	world.setGameRuleValue("doDaylightCycle", "false");
 	    	world.setGameRuleValue("doWeatherCycle", "false");
 		}

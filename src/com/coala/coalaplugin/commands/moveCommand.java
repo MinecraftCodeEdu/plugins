@@ -55,7 +55,7 @@ public class moveCommand implements CommandExecutor{
 					return true;
 				} else {
 					world.setTime(6000L);
-					world.setDifficulty(Difficulty.PEACEFUL);
+					world.setDifficulty(Difficulty.NORMAL);
 					
 					world.setAutoSave(false);
 					world.setGameRuleValue("keepInventory", "true");
@@ -108,7 +108,7 @@ public class moveCommand implements CommandExecutor{
 				}).createWorld();
 
 				world.setTime(6000L);
-				world.setDifficulty(Difficulty.PEACEFUL);
+				world.setDifficulty(Difficulty.NORMAL);
 				
 				world.setAutoSave(false);
 				world.setGameRuleValue("keepInventory", "true");
