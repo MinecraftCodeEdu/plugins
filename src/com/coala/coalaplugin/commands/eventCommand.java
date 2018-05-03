@@ -1,9 +1,12 @@
 package com.coala.coalaplugin.commands;
 
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import com.coala.coalaplugin.Main;
 
@@ -25,6 +28,14 @@ public class eventCommand implements CommandExecutor{
 		if(args[0].equals("on")) {
 			Main.setEventToggle(true);
 			sender.sendMessage("[event] 이벤트 처리가 활성화되었습니다.");
+			
+			ItemStack item = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
+	        SkullMeta meta = (SkullMeta) item.getItemMeta();
+	        meta.setOwner("Hacking");
+	        item.setItemMeta(meta);
+	        Player player = (Player)sender;
+	        player.getInventory().addItem(item);
+	        
 			return true;
 		} else if (args[0].equals("off")) {
 			Main.setEventToggle(false);

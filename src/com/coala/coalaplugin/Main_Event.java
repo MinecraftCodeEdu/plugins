@@ -162,8 +162,7 @@ public class Main_Event implements Listener {
 	@EventHandler(priority = EventPriority.LOW)
 	public void Event(PlayerRespawnEvent event) // 플레이어 부활
 	{
-		Player player = event.getPlayer();
-		player.teleport(ConfigWorld.getWorld().getSpawnLocation());
+		event.setRespawnLocation(event.getPlayer().getWorld().getSpawnLocation());
 	}
 	@EventHandler(priority = EventPriority.LOW)
 	public void Event(EntityPickupItemEvent event) // 아이템 습득

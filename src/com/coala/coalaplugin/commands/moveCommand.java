@@ -76,26 +76,61 @@ public class moveCommand implements CommandExecutor{
 					return true;
 				}
 			} else { // world folder not exist
-				sender.sendMessage("맵이 존재하지 않습니다.");
+				sender.sendMessage("맵이 존재하지 않습니다. 맵을 생성합니다.");
+				
+				world = WorldCreator.name(args[0]).type(WorldType.FLAT).environment(World.Environment.NORMAL).generator(new ChunkGenerator()
+				{
+					@Override
+					public ChunkData generateChunkData(World world, Random random, int x, int z, BiomeGrid biome)
+					{
+						ChunkData cd = Bukkit.createChunkData(world);
+						
+						for(int numX = 0; numX < 16 ; numX++) {
+							for(int numZ = 0; numZ < 16; numZ++) {
+								for(int numY = 0; numY < 4 ; numY++) {
+									if(numY == 0)
+										cd.setBlock(numX, numY, numZ, Material.BEDROCK);
+									else if (numY == 3)
+										cd.setBlock(numX, numY, numZ, Material.GRASS);
+									else
+										cd.setBlock(numX, numY, numZ, Material.DIRT);
+								}
+							}
+						}
+						
+						return cd;
+					}
+					@Override
+					public Location getFixedSpawnLocation(World world, Random random)
+					{
+						return new Location(world, 0, 4, 0);
+					}
+				}).createWorld();
+
+				world.setTime(6000L);
+				world.setDifficulty(Difficulty.PEACEFUL);
+				
+				world.setAutoSave(false);
+				world.setGameRuleValue("keepInventory", "true");
+				world.setGameRuleValue("doDaylightCycle", "false");
+				world.setGameRuleValue("doWeatherCycle", "false");
+				world.setGameRuleValue("doMobSpawning", "false");
+				world.setGameRuleValue("doFireTick", "false");
+				world.setGameRuleValue("doTileDrops", "false");
+				world.setGameRuleValue("doMobLoot", "false");
+				world.setGameRuleValue("mobGriefing", "false");
+				world.setGameRuleValue("naturalRegeneration", "false");
+				world.getLivingEntities().forEach(LivingEntity::remove);
+				
+				for(Player p : Bukkit.getOnlinePlayers()) {					
+					p.teleport(world.getSpawnLocation());
+				}
+				Bukkit.broadcastMessage("관리자에 의해 "+world.getName()+" 세계로 이동되었습니다.");
 				
 				return false;
 				
 //				sender.sendMessage("맵이 존재하지 않습니다. 새로운 맵을 생성합니다.");
-//				world = WorldCreator.name(args[0]).type(WorldType.FLAT).environment(World.Environment.NORMAL).generator(new ChunkGenerator()
-//				{
-//					@Override
-//					public ChunkData generateChunkData(World world, Random random, int x, int z, BiomeGrid biome)
-//					{
-//						ChunkData cd = Bukkit.createChunkData(world);
-//						
-//						return cd;
-//					}
-//					@Override
-//					public Location getFixedSpawnLocation(World world, Random random)
-//					{
-//						return new Location(world, 0, 1, 0);
-//					}
-//				}).createWorld();
+
 //				
 //				int minX = -25;
 //				int maxX = 25;
