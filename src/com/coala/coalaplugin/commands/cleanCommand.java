@@ -26,44 +26,42 @@ public class cleanCommand implements CommandExecutor{
 		Player player = (Player) sender;
 		World world = player.getWorld();
 		
-		if(world.getName().equals("world")) {
-			int height = 100;
-			int width = 200;
-			int x,y,z;
-			
-			x = player.getLocation().getBlockX();
-			y = 4;
-			z = player.getLocation().getBlockZ();
-			
+		//world.getName().equals("world")
+
+		int height = 100; // y부터 y+height까지 정리
+		int width = 200; // -width에서 +width까지 정리
+		int x,y,z;
+		
+		x = player.getLocation().getBlockX();
+		y = 4;
+		z = player.getLocation().getBlockZ();
+		
+		for(int j = y-1; j <= y+height ; j++ ) {
 			for(int i = x-width; i <= x+width ; i++ ) {
-				for(int j = y-1; j <= y+height ; j++ ) {
-					for(int k = z-width; k <= z+width ; k++ ) {
-						if(j != y-1) {
-							world.getBlockAt(i,j,k).setType(Material.AIR);
-						} else {
-							world.getBlockAt(i,j,k).setType(Material.GRASS);
-						}
+				for(int k = z-width; k <= z+width ; k++ ) {
+					if(j != y-1) {
+						world.getBlockAt(i,j,k).setType(Material.AIR); // 위쪽 부분은 공기
+					} else {
+						world.getBlockAt(i,j,k).setType(Material.GRASS); // 바닥 부분인 y-1은 잔디
 					}
 				}
 			}
+		}
+		
+		// 맵에 존재하는 플레이어를 제외한 엔티티 정리
+		List<Entity> entList = world.getEntities();
+        for(Entity current : entList){
+            if (!(current instanceof Player)){
+	            current.remove();
+	        }
+		}
+        
+		world.setStorm(false); // 맑음
+		world.setTime(6000); // 낮
+		world.setDifficulty(Difficulty.PEACEFUL); // 난이도 평화로움
+        
+        player.sendMessage("[clean] 주변을 정리하였습니다.");
 			
-			List<Entity> entList = world.getEntities();
-	        for(Entity current : entList){
-	            if (!(current instanceof Player)){
-		            current.remove();
-		        }
-			}
-	        
-			world.setStorm(false);
-			world.setTime(6000);
-			world.setDifficulty(Difficulty.PEACEFUL);
-	        
-	        player.sendMessage("[clean] 주변을 정리하였습니다.");
-			
-			return true;
-		} else {
-			sender.sendMessage("[clean] 기본 월드에서만 사용할 수 있습니다.");
-			return false;
-		}		
+        return true;
 	}
 }

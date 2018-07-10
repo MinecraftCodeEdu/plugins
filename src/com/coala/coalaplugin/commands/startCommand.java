@@ -9,6 +9,7 @@ import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Note;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -38,7 +39,7 @@ public class startCommand implements CommandExecutor{
 	public static Scoreboard board = manager.getNewScoreboard();
 	public static Objective objective = board.registerNewObjective("점수", "dummy");
 	public static BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-	public static BossBar bossbar = Bukkit.createBossBar("남은 시간", BarColor.YELLOW, BarStyle.SOLID);
+	public static BossBar bossbar = Bukkit.createBossBar("남은 시간", BarColor.BLUE, BarStyle.SEGMENTED_10);
 	
 	public static Player tagger;
 	
@@ -54,14 +55,14 @@ public class startCommand implements CommandExecutor{
 			return false;
 		}
 		if(args.length < 1) {
-			sender.sendMessage("§c사용법: /start <게임이름>");
+			sender.sendMessage("§c사용법: /start <보물찾기1/보물찾기2>");
 			return false;
 		}
 		
 		Player player = (Player) sender;
 		World world = player.getWorld();
 		
-		if(args[0].equalsIgnoreCase("headtresure") || args[0].equalsIgnoreCase("weapontresure")) {
+		if(args[0].equalsIgnoreCase("headtresure") || args[0].equalsIgnoreCase("weapontresure") || args[0].equalsIgnoreCase("보물찾기1") || args[0].equalsIgnoreCase("보물찾기2")) {
 			String[] head = {"Laserpanda", "Chopa_Delicious", "meebiio", "NanobiteNpc","BackHoe","Kirlia",
 					"jellyhunter","DavidPrime14","semoyu","redolwolf","penguin617283","Coothmagi","Wizarddev","104","charliescott137"};
 			
@@ -71,16 +72,18 @@ public class startCommand implements CommandExecutor{
 					Material.GOLD_BOOTS,Material.GOLD_CHESTPLATE,Material.GOLD_HELMET,Material.GOLD_LEGGINGS,
 					Material.IRON_BOOTS,Material.IRON_CHESTPLATE,Material.IRON_HELMET,Material.IRON_LEGGINGS,
 					Material.WOOD_SWORD,Material.IRON_SWORD,Material.STONE_SWORD,Material.DIAMOND_SWORD,Material.GOLD_SWORD,
-					Material.BOW, Material.ARROW};
+					Material.BOW, Material.ARROW, Material.SHIELD};
 			
+			//bossbar
 			bossbar.removeAll();
+			Bukkit.getScheduler().cancelAllTasks();
 			
 			Bukkit.broadcastMessage("보물 찾기 게임 시작!");
 			
 			Random random = new Random();
 			
-			int num = 20;
-			int edge = 150;
+			int num = 5;
+			int edge = 200;
 			int x, y, z;
 			int t;
 			ArrayList<Location> list = new ArrayList<>();
@@ -88,14 +91,14 @@ public class startCommand implements CommandExecutor{
 			 
 			for(int i = 0; i < num ; i++) {
 				t = random.nextInt(edge);
-				x = (t % 2 == 0) ? t : -t ;
+				x = player.getLocation().getBlockX() + ( (t % 2 == 0) ? t : -t );
 
 				t = (t > edge/2) ? random.nextInt(edge) : edge/2 + random.nextInt(edge/2);
-				z = (t % 2 == 0) ? t : -t ;
+				z = player.getLocation().getBlockZ() + ( (t % 2 == 0) ? t : -t );
 				
 				y = player.getWorld().getHighestBlockYAt(x, z);
 						
-				loc = new Location(world, x, y, z);
+				loc = new Location(world, x, y-2, z); // under the ground
 				//player.chat(loc+"");
 				list.add(loc);
 			}
@@ -113,7 +116,7 @@ public class startCommand implements CommandExecutor{
 				    Chest chest = (Chest) block.getState();
 				    Inventory chestInv = chest.getInventory();
 				    
-				    if(args[0].equalsIgnoreCase("headtresure")) {
+				    if( args[0].equalsIgnoreCase("headtresure") || args[0].equalsIgnoreCase("보물찾기1") ) {
 						ItemStack item = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
 				        SkullMeta meta = (SkullMeta) item.getItemMeta();
 				        meta.setOwner(head[random.nextInt(head.length)]);
@@ -142,7 +145,7 @@ public class startCommand implements CommandExecutor{
 			}
 			
 			scheduler.scheduleSyncRepeatingTask(Main.getInstance(), new Runnable() {
-				double gameTime = 20;
+				double gameTime = 300;
 				double time = gameTime;
 				// Sets the time to 60 seconds
 				@Override
@@ -161,7 +164,11 @@ public class startCommand implements CommandExecutor{
 							}
 							else
 							{
-								// 체스트가 비어있으면 삭제 코드 추가
+								//bossbar
+								for (Player p : Bukkit.getOnlinePlayers()) {
+									 bossbar.addPlayer(p);
+								}
+								// 체스트가 비어있으면 삭제 코드
 							    Chest chest = (Chest) block.getState();
 							    Inventory chestInv = chest.getInventory();
 							    if(chestInv.getItem(0) == null) {
@@ -203,7 +210,7 @@ public class startCommand implements CommandExecutor{
 			return true;
 		}
 		
-		if((args[0].equalsIgnoreCase("tresure") || args[0].equalsIgnoreCase("보물찾기"))) {
+		if((args[0].equalsIgnoreCase("tresure") || args[0].equalsIgnoreCase("보물찾기4"))) {
 			if(!world.getName().equals("world")) {
 				sender.sendMessage("§c기본월드에서만 사용할 수 있습니다.");
 				return false;
@@ -371,8 +378,7 @@ public class startCommand implements CommandExecutor{
 //				Bukkit.broadcastMessage("§c"+args[1]+"가 존재하지 않습니다.");
 //				return false;
 			}
-			
-			
+
 	
 			//tagger = Bukkit.getPlayer(args[1]);
 			Bukkit.broadcastMessage("술래는 §e"+tagger.getName()+"§r입니다.");
@@ -469,7 +475,5 @@ public class startCommand implements CommandExecutor{
         }
         return key;
     }
-    
-   
     
 }

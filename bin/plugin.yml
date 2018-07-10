@@ -4,11 +4,19 @@ main: com.coala.coalaplugin.Main
 
 commands:
   clean:
-    description: "플레이어 주변을 청소합니다."
-  event:
-    description: "이벤트 처리를 활성화/비활성화 합니다."
+    description: "내 주변을 정리합니다."
+    aliases: ["청소"]
+#  event:
+#    description: "이벤트 처리를 활성화/비활성화 합니다."
   move:
     description: "해당 월드로 이동합니다."
     aliases: ["이동"]
   start:
-    description: "게임을 시작합니다."
+    description: "보물찾기1/보물찾기2 게임을 시작합니다."
+    aliases: ["시작"]
+  come:
+    description: "플레이어들을 내 주변으로 소환합니다."
+    aliases: ["소환"]
+  create:
+    description: "기본/평지/넓은 생물군계/지형이 높은 타입의 월드를 생성합니다."
+    aliases: ["생성"]
