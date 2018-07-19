@@ -2,43 +2,126 @@ package com.coala.coalaplugin;
 
 import java.util.ArrayList;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Difficulty;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockCanBuildEvent;
-import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.entity.ItemSpawnEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
 import com.coala.coalaplugin.commands.startCommand;
-import com.coala.coalaplugin.data.ConfigWorld;
 
 public class Main_Event implements Listener {
+	public Main pl;
 	Scoreboard scoreboard = startCommand.board;
 	Objective objective = startCommand.objective;
 	
+	public Main_Event(Main instance)
+	{
+		this.pl = instance;
+	}
+	
+	@EventHandler(priority = EventPriority.LOW)
+	public void Event(PlayerRespawnEvent e) // 플레이어 리스폰
+	{
+		e.setRespawnLocation(e.getPlayer().getWorld().getSpawnLocation());
+	}
+	@EventHandler(priority = EventPriority.LOW)
+	public void Event(AsyncPlayerChatEvent e) // 채팅 제한
+	{
+		if(this.pl.isChatPaused && !e.getPlayer().isOp()) {
+			e.getPlayer().sendMessage("관리자를 제외한 플레이어는 채팅이 제한되어있습니다.");
+			e.setCancelled(true);
+		}
+	}
+	@EventHandler(priority = EventPriority.LOW)
+	public void Event(PlayerCommandPreprocessEvent e) // 명렁어 제한
+	{
+		if(this.pl.isCommandPaused && !e.getPlayer().isOp()) {
+			e.getPlayer().sendMessage("관리자를 제외한 플레이어는 명령어 사용이 제한되어있습니다.");
+			e.setCancelled(true);
+		}
+	}
+	@EventHandler(priority = EventPriority.LOW)
+	public void Event(EntityDamageEvent e) // 플레이어 무적
+	{
+		if(this.pl.isPlayerInvincible) {
+			if(e.getEntity() instanceof Player) {
+				e.setCancelled(true);
+			}
+		}
+	}
+	@EventHandler(priority = EventPriority.LOW)
+	public void Event(EntityDamageByEntityEvent e) // 플레이어 간 데미지 제한 (폭발에 의한 데미지는 막지 못함)
+	{
+		if(this.pl.isPreventPK) {
+			if(e.getDamager() instanceof Player && e.getEntity() instanceof Player)
+			{
+				e.setCancelled(true);
+			}
+		}
+	}	
+	@EventHandler(priority = EventPriority.LOW)
+	public void Event(EntityExplodeEvent e) // TNT 혹은 크리퍼 폭발에 의한 블록 변화
+	{
+		if(this.pl.isPreventExplode) {
+	        for (Block block : new ArrayList<Block>(e.blockList())) {
+	            e.blockList().remove(block);
+	        }
+		}
+	}
+	@EventHandler(priority = EventPriority.LOW)
+	public void Event(BlockPlaceEvent e) // 블럭 짓기
+	{
+		if((this.pl.isPlayerFreeze || this.pl.isPreventWorldEdit) && !e.getPlayer().isOp()) {
+			if(this.pl.isPlayerFreeze) {
+				e.getPlayer().sendMessage("몸이 얼어있습니다.");
+			} else {
+				e.getPlayer().sendMessage("관리자를 제외한 플레이어는 월드 변경이 금지되어있습니다.");
+			}
+			e.setCancelled(true);
+		}
+			
+	}
+	@EventHandler(priority = EventPriority.LOW)
+	public void Event(BlockBreakEvent e) // 블럭 부수기
+	{
+		if((this.pl.isPlayerFreeze || this.pl.isPreventWorldEdit) && !e.getPlayer().isOp()) {
+			if(this.pl.isPlayerFreeze) {
+				e.getPlayer().sendMessage("몸이 얼어있습니다.");
+			} else {
+				e.getPlayer().sendMessage("관리자를 제외한 플레이어는 월드 변경이 금지되어있습니다.");
+			}
+			e.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void Event(PlayerMoveEvent e) { // 플레이어 얼리기
+		Location from = e.getFrom(), to = e.getTo();
+		if(this.pl.isPlayerFreeze && !e.getPlayer().isOp()) {
+			if((from.getX() != to.getX()) || (from.getZ() != to.getZ())) { // OBS: care on what you do with this
+			e.getPlayer().teleport(new Location(from.getWorld(), from.getX(), from.getY(), from.getZ(), to.getYaw(), to.getPitch()));
+			e.setCancelled(true); // I always have an issue with cancelling this, so I just teleport them
+			}
+		}
+	}
+}
+
+
+
+
 //	@EventHandler(priority = EventPriority.LOW)
 //	public void Event(FoodLevelChangeEvent event) // 배고픔 수치 변경
 //	{
@@ -47,23 +130,6 @@ public class Main_Event implements Listener {
 //			event.setCancelled(true);
 //		}
 //	}
-//	@EventHandler(priority = EventPriority.LOW)
-//	public void Event(EntityExplodeEvent event) // 엔티티가 폭발
-//	{
-//		if((boolean)ConfigWorld.getValue("EntityExplodeEvent"))
-//		{
-//			if(ConfigWorld.getWorld().getName().equals("1-2")) {
-//		        for (Block block : new ArrayList<Block>(event.blockList())) {
-//		            if(block.getType() != Material.TNT) {
-//		                event.blockList().remove(block);
-//		            }
-//		        }
-//			} else {
-//				event.blockList().clear();
-//			}
-//	    }
-//	}
-//	
 //	@EventHandler(priority = EventPriority.LOW)
 //	public void Event(BlockExplodeEvent event) // 블럭이 폭발
 //	{
@@ -163,11 +229,7 @@ public class Main_Event implements Listener {
 //	}
 /////////////////////////////////////////////////////////////////////////	
 
-	@EventHandler(priority = EventPriority.LOW)
-	public void Event(PlayerRespawnEvent event) // 플레이어 리스폰
-	{
-		event.setRespawnLocation(event.getPlayer().getWorld().getSpawnLocation());
-	}
+
 //	@EventHandler(priority = EventPriority.LOW)
 //	public void Event(EntityPickupItemEvent event) // 아이템 습득
 //	{
@@ -237,14 +299,7 @@ public class Main_Event implements Listener {
 //			event.setCancelled(true);
 //		}
 //	}
-//	@EventHandler(priority = EventPriority.LOW)
-//	public void Event(BlockBreakEvent event) // 블럭 부수기
-//	{
-//		if((boolean)ConfigWorld.getValue("BlockBreakEvent"))
-//		{
-//			event.setCancelled(true);
-//		}
-//	}
+
 /////////////////////////////////////////////////////////////////////////	
 //	@EventHandler(priority = EventPriority.LOW)
 //	public void Event(PlayerInteractEvent event) // 플레이어 상호작용
@@ -259,18 +314,9 @@ public class Main_Event implements Listener {
 //	}
 
 /////////////////////////////////////////////////////////////////////////	
-//	@EventHandler(priority = EventPriority.LOW)
-//	public void Event(EntityDamageEvent event) // 엔티티 데미지 입음
-//	{
-//		if((boolean)ConfigWorld.getValue("EntityDamageEvent"))
-//		{
-//			if(event.getEntity() instanceof Player) {
-//				event.setCancelled(true);
-//			}
-//		}
-//	}
+
 /////////////////////////////////////////////////////////////////////////		
-	
+
 //	@EventHandler(priority = EventPriority.LOW)
 //	public void Event(EntityDamageByEntityEvent event) // 엔티티가 엔티티에게 데미지 입음
 //	{
@@ -353,4 +399,4 @@ public class Main_Event implements Listener {
 //			}
 //		}
 //	}
-}
+

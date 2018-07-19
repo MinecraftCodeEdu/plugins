@@ -2,6 +2,7 @@ package com.coala.coalaplugin.commands;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -9,21 +10,26 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 
 public class cleanCommand implements CommandExecutor{
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if(!(sender instanceof Player)) {
-			sender.sendMessage("플레이어만 사용 가능합니다.");
-			return false;
-		} else if(!sender.isOp()) {
+		if(!sender.isOp()) {
 			sender.sendMessage("관리자만 사용 가능합니다.");
+			return false;
+		} else if(args.length < 1) {
+			sender.sendMessage("§c사용법: /clean <플레이어>");
 			return false;
 		}
 		
-		Player player = (Player) sender;
+		Player player = Bukkit.getPlayer(args[0]);
+		
+		if(player == null) {
+			sender.sendMessage("§c"+args[0]+" 플레이어가 존재하지 않습니다.");
+			return false;
+		}
+
 		World world = player.getWorld();
 		
 		//world.getName().equals("world")
@@ -60,7 +66,7 @@ public class cleanCommand implements CommandExecutor{
 		world.setTime(6000); // 낮
 		world.setDifficulty(Difficulty.PEACEFUL); // 난이도 평화로움
         
-        player.sendMessage("[clean] 주변을 정리하였습니다.");
+		Bukkit.broadcastMessage(player.getName()+" 플레이어의 주변을 정리하였습니다.");
 			
         return true;
 	}

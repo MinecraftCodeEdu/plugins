@@ -9,7 +9,6 @@ import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Note;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -24,7 +23,6 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -47,32 +45,36 @@ public class startCommand implements CommandExecutor{
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if(!(sender instanceof Player)) {
-			sender.sendMessage("플레이어만 사용 가능합니다.");
-			return false;
-		} else if(!sender.isOp()) {
+		if(!sender.isOp()) {
 			sender.sendMessage("관리자만 사용 가능합니다.");
 			return false;
-		}
-		if(args.length < 1) {
-			sender.sendMessage("§c사용법: /start <보물찾기1/보물찾기2>");
+		} else if(args.length < 2) {
+			sender.sendMessage("§c사용법: /start <보물찾기1/보물찾기2> <기준플레이어>");
 			return false;
 		}
 		
-		Player player = (Player) sender;
+		Player player = Bukkit.getPlayer(args[1]);
+		
+		if(player == null) {
+			sender.sendMessage("§c"+args[1]+" 플레이어가 존재하지 않습니다.");
+			return false;
+		}
+
 		World world = player.getWorld();
 		
-		if(args[0].equalsIgnoreCase("headtresure") || args[0].equalsIgnoreCase("weapontresure") || args[0].equalsIgnoreCase("보물찾기1") || args[0].equalsIgnoreCase("보물찾기2")) {
-			String[] head = {"Laserpanda", "Chopa_Delicious", "meebiio", "NanobiteNpc","BackHoe","Kirlia",
-					"jellyhunter","DavidPrime14","semoyu","redolwolf","penguin617283","Coothmagi","Wizarddev","104","charliescott137"};
+		if(args[0].equalsIgnoreCase("armorTreasure") || args[0].equalsIgnoreCase("weaponTreasure") || args[0].equalsIgnoreCase("보물찾기1") || args[0].equalsIgnoreCase("보물찾기2")) {
+//			String[] head = {"Laserpanda", "Chopa_Delicious", "meebiio", "NanobiteNpc","BackHoe","Kirlia",
+//					"jellyhunter","DavidPrime14","semoyu","redolwolf","penguin617283","Coothmagi","Wizarddev","104","charliescott137"};
 			
-			Material[] weapon = {Material.LEATHER_BOOTS,Material.LEATHER_CHESTPLATE,Material.LEATHER_HELMET,Material.LEATHER_LEGGINGS,
-					Material.CHAINMAIL_BOOTS,Material.CHAINMAIL_CHESTPLATE,Material.CHAINMAIL_HELMET,Material.CHAINMAIL_LEGGINGS,
-					Material.DIAMOND_BOOTS,Material.DIAMOND_CHESTPLATE,Material.DIAMOND_HELMET,Material.DIAMOND_LEGGINGS,
-					Material.GOLD_BOOTS,Material.GOLD_CHESTPLATE,Material.GOLD_HELMET,Material.GOLD_LEGGINGS,
-					Material.IRON_BOOTS,Material.IRON_CHESTPLATE,Material.IRON_HELMET,Material.IRON_LEGGINGS,
+			Material[] weapon = {Material.LEATHER_BOOTS,Material.CHAINMAIL_BOOTS,Material.DIAMOND_BOOTS,Material.GOLD_BOOTS,Material.IRON_BOOTS,
 					Material.WOOD_SWORD,Material.IRON_SWORD,Material.STONE_SWORD,Material.DIAMOND_SWORD,Material.GOLD_SWORD,
 					Material.BOW, Material.ARROW, Material.SHIELD};
+			
+			Material[] armor = {Material.IRON_CHESTPLATE,Material.IRON_HELMET,Material.IRON_LEGGINGS,
+					Material.GOLD_CHESTPLATE,Material.GOLD_HELMET,Material.GOLD_LEGGINGS,
+					Material.DIAMOND_CHESTPLATE,Material.DIAMOND_HELMET,Material.DIAMOND_LEGGINGS,
+					Material.CHAINMAIL_CHESTPLATE,Material.CHAINMAIL_HELMET,Material.CHAINMAIL_LEGGINGS,
+					Material.LEATHER_CHESTPLATE,Material.LEATHER_HELMET,Material.LEATHER_LEGGINGS};
 			
 			//bossbar
 			bossbar.removeAll();
@@ -116,12 +118,17 @@ public class startCommand implements CommandExecutor{
 				    Chest chest = (Chest) block.getState();
 				    Inventory chestInv = chest.getInventory();
 				    
-				    if( args[0].equalsIgnoreCase("headtresure") || args[0].equalsIgnoreCase("보물찾기1") ) {
-						ItemStack item = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
-				        SkullMeta meta = (SkullMeta) item.getItemMeta();
-				        meta.setOwner(head[random.nextInt(head.length)]);
-				        item.setItemMeta(meta);
-					    chestInv.addItem(item);
+				    if( args[0].equalsIgnoreCase("armortresure") || args[0].equalsIgnoreCase("보물찾기1") ) {
+//						ItemStack item = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
+//				        SkullMeta meta = (SkullMeta) item.getItemMeta();
+//				        meta.setOwner(head[random.nextInt(head.length)]);
+//				        item.setItemMeta(meta);
+//					    chestInv.addItem(item);
+				    	
+				    	Material m = armor[random.nextInt(armor.length)];
+				    	ItemStack item = new ItemStack(m, 1);
+				    	
+				    	chestInv.addItem(item);
 				    } else {
 				    	Material m = weapon[random.nextInt(weapon.length)];
 				    	ItemStack item;
@@ -155,6 +162,11 @@ public class startCommand implements CommandExecutor{
 						bossbar.setTitle("남은 시간 : " + (int)time + "초");
 						bossbar.setProgress(time/gameTime);
 						
+						//bossbar
+						for (Player p : Bukkit.getOnlinePlayers()) {
+							 bossbar.addPlayer(p);
+						}
+						
 						for(Location location : list) {
 							Block block = location.getBlock();
 							if (!(block.getState() instanceof Chest))
@@ -164,20 +176,17 @@ public class startCommand implements CommandExecutor{
 							}
 							else
 							{
-								//bossbar
-								for (Player p : Bukkit.getOnlinePlayers()) {
-									 bossbar.addPlayer(p);
+								if(time % 10 == 0) {
+								    Chest chest = (Chest) block.getState();
+								    Inventory chestInv = chest.getInventory();
+								    
+								    // 체스트가 비어있으면 삭제 코드
+								    if(chestInv.getItem(0) == null) {
+								    	world.getBlockAt(location).setType(Material.AIR);
+								    } else {
+								    	Bukkit.broadcastMessage("XYZ : "+location.getBlockX()+" / "+location.getBlockY()+" / "+location.getBlockZ()+" 에 §e보물§r이 있습니다.");
+								    }
 								}
-								// 체스트가 비어있으면 삭제 코드
-							    Chest chest = (Chest) block.getState();
-							    Inventory chestInv = chest.getInventory();
-							    if(chestInv.getItem(0) == null) {
-							    	world.getBlockAt(location).setType(Material.AIR);
-							    } else {
-							    	if(time % 10 == 0) {
-							    		Bukkit.broadcastMessage("XYZ : "+location.getBlockX()+" / "+location.getBlockY()+" / "+location.getBlockZ()+" 에 §e보물§r이 있습니다.");
-							    	}
-							    }
 							}
 						}
 
@@ -210,7 +219,9 @@ public class startCommand implements CommandExecutor{
 			return true;
 		}
 		
-		if((args[0].equalsIgnoreCase("tresure") || args[0].equalsIgnoreCase("보물찾기4"))) {
+		///////////////////////////////////////////////////////////////////////////////////End Armor/Weapon Treasure
+		
+		if((args[0].equalsIgnoreCase("Treasure") || args[0].equalsIgnoreCase("보물찾기4"))) {
 			if(!world.getName().equals("world")) {
 				sender.sendMessage("§c기본월드에서만 사용할 수 있습니다.");
 				return false;
