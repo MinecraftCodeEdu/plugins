@@ -2,6 +2,8 @@ package com.coala.coalaplugin;
 
 import java.util.ArrayList;
 
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -15,6 +17,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scoreboard.Objective;
@@ -116,6 +119,11 @@ public class Main_Event implements Listener {
 			e.setCancelled(true); // I always have an issue with cancelling this, so I just teleport them
 			}
 		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOW)
+	public void Event(PlayerJoinEvent e) {// 플레이어 접속
+		//e.getPlayer().setGameMode(Bukkit.getDefaultGameMode());
 	}
 }
 

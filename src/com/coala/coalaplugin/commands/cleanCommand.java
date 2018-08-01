@@ -62,10 +62,6 @@ public class cleanCommand implements CommandExecutor{
 	        }
 		}
         
-		world.setStorm(false); // 맑음
-		world.setTime(6000); // 낮
-		world.setDifficulty(Difficulty.PEACEFUL); // 난이도 평화로움
-        
 		Bukkit.broadcastMessage(player.getName()+" 플레이어의 주변을 정리하였습니다.");
 			
         return true;
