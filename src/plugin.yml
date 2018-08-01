@@ -1,10 +1,10 @@
 name: Coala
-version: 1.01
+version: 1.02
 main: com.coala.coalaplugin.Main
 
 commands:
   clean:
-    description: "내 주변을 정리합니다."
+    description: "플레이어 주변을 정리합니다."
     aliases: ["청소"]
 #  event:
 #    description: "이벤트 처리를 활성화/비활성화 합니다."
@@ -20,8 +20,12 @@ commands:
   create:
     description: "기본/평지/넓은 생물군계/지형이 높은 타입의 월드를 생성합니다."
     aliases: ["생성"]
+  rabbit:
+    description: "플레이어 주위에 토끼를 뿌립니다."
   freeze:
     description: "플레이어들을 얼리거나 녹입니다."
+  mobfreeze:
+    description: "몹들을 얼리거나 녹입니다."
   chatPaused:
     description: "플레이어들의 채팅을 제한/허용합니다."
   commandPaused:
@@ -34,3 +38,9 @@ commands:
     description: "플레이어와 플레이어 간의 피해를 입지 않도록 설정합니다."
   preventWorldEdit:
     description: "플레이어의 월드 변경을 제한/허용합니다."
+#  modeAll:
+#    description: "모든 플레이어의 게임 모드를 변경합니다."
+#  giveAll:
+#    description: "모든 플레이어에게 아이템을 제공합니다."
+  classDefault:
+    description: "기본 수업 환경으로 변경합니다."
