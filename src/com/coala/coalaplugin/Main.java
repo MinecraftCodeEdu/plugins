@@ -7,15 +7,13 @@ import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.coala.coalaplugin.commands.chatPausedCommand;
+import com.coala.coalaplugin.commands.classDefaultCommand;
 import com.coala.coalaplugin.commands.cleanCommand;
 import com.coala.coalaplugin.commands.comeCommand;
 import com.coala.coalaplugin.commands.commandPausedCommand;
 import com.coala.coalaplugin.commands.createCommand;
-import com.coala.coalaplugin.commands.classDefaultCommand;
-import com.coala.coalaplugin.commands.freezeCommand;
-import com.coala.coalaplugin.commands.giveAllCommand;
+import com.coala.coalaplugin.commands.freeze;
 import com.coala.coalaplugin.commands.mobFreezeCommand;
-import com.coala.coalaplugin.commands.modeAllCommand;
 import com.coala.coalaplugin.commands.moveCommand;
 import com.coala.coalaplugin.commands.playerInvincibleCommand;
 import com.coala.coalaplugin.commands.preventExplodeCommand;
@@ -23,6 +21,8 @@ import com.coala.coalaplugin.commands.preventPKCommand;
 import com.coala.coalaplugin.commands.preventWorldEditCommand;
 import com.coala.coalaplugin.commands.rabbitCommand;
 import com.coala.coalaplugin.commands.startCommand;
+import com.coala.coalaplugin.commands.timer;
+import com.coala.coalaplugin.commands.unFreeze;
 import com.coala.coalaplugin.data.GameData;
 
 public class Main extends JavaPlugin {
@@ -36,7 +36,7 @@ public class Main extends JavaPlugin {
 	public boolean isPreventPK = false; // 플레이어 간 데미지 제한
 	public boolean isPreventExplode = false; // 폭발에 의한 데미지 제한
 	public boolean isPreventWorldEdit = false; // 월드 변경 제한
-	public boolean isPlayerFreeze = false; // 플레이어 얼리기
+	public boolean isPlayerFreeze = false; // 플레이어 얼리기 Deprecated
 	public boolean isMobFreeze = false; // 몹 얼리기
 	
 	@Override
@@ -57,12 +57,16 @@ public class Main extends JavaPlugin {
 		getCommand("preventPK").setExecutor(new preventPKCommand(this));
 		getCommand("preventExplode").setExecutor(new preventExplodeCommand(this));
 		getCommand("preventWorldEdit").setExecutor(new preventWorldEditCommand(this));
-		getCommand("freeze").setExecutor(new freezeCommand(this));
+//		getCommand("freeze").setExecutor(new freezeCommand(this));
 		getCommand("mobfreeze").setExecutor(new mobFreezeCommand(this));
 		getCommand("rabbit").setExecutor(new rabbitCommand());
 //		getCommand("modeall").setExecutor(new modeAllCommand());
 //		getCommand("giveall").setExecutor(new giveAllCommand());
 		getCommand("classDefault").setExecutor(new classDefaultCommand(this));
+		
+		getCommand("timer").setExecutor(new timer());
+		getCommand("unfreeze").setExecutor(new unFreeze());
+		getCommand("freeze").setExecutor(new freeze());
 		
 		Bukkit.getPluginManager().registerEvents(new Main_Event(this), this);
 		

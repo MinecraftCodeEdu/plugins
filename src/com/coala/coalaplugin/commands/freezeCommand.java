@@ -11,6 +11,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.coala.coalaplugin.Main;
 
+// Deprecated Command
 public class freezeCommand implements CommandExecutor{
 	public Main pl;
 	
