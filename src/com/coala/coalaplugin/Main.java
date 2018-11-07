@@ -23,6 +23,7 @@ import com.coala.coalaplugin.commands.rabbitCommand;
 import com.coala.coalaplugin.commands.startCommand;
 import com.coala.coalaplugin.commands.timer;
 import com.coala.coalaplugin.commands.unFreeze;
+import com.coala.coalaplugin.commands.weatherPlayer;
 import com.coala.coalaplugin.data.GameData;
 
 public class Main extends JavaPlugin {
@@ -67,6 +68,7 @@ public class Main extends JavaPlugin {
 		getCommand("timer").setExecutor(new timer());
 		getCommand("unfreeze").setExecutor(new unFreeze());
 		getCommand("freeze").setExecutor(new freeze());
+		getCommand("weatherPlayer").setExecutor(new weatherPlayer());
 		
 		Bukkit.getPluginManager().registerEvents(new Main_Event(this), this);
 		
