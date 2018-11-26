@@ -50,3 +50,7 @@ commands:
     description: "얼어붙은 플레이어를 움직일 수 있드록 합니다."
   weatherPlayer:
     description: "해당 플레이어가 있는 월드의 날씨를 변경합니다."
+  blind:
+    description: "플레이어의 시야를 차단합니다."
+  unblind:
+    description: "플레이어의 시야 차단 효과를 제거합니다."

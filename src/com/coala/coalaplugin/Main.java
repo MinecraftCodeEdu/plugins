@@ -6,6 +6,7 @@ import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.coala.coalaplugin.commands.blind;
 import com.coala.coalaplugin.commands.chatPausedCommand;
 import com.coala.coalaplugin.commands.classDefaultCommand;
 import com.coala.coalaplugin.commands.cleanCommand;
@@ -22,6 +23,7 @@ import com.coala.coalaplugin.commands.preventWorldEditCommand;
 import com.coala.coalaplugin.commands.rabbitCommand;
 import com.coala.coalaplugin.commands.startCommand;
 import com.coala.coalaplugin.commands.timer;
+import com.coala.coalaplugin.commands.unBlind;
 import com.coala.coalaplugin.commands.unFreeze;
 import com.coala.coalaplugin.commands.weatherPlayer;
 import com.coala.coalaplugin.data.GameData;
@@ -69,6 +71,8 @@ public class Main extends JavaPlugin {
 		getCommand("unfreeze").setExecutor(new unFreeze());
 		getCommand("freeze").setExecutor(new freeze());
 		getCommand("weatherPlayer").setExecutor(new weatherPlayer());
+		getCommand("blind").setExecutor(new blind());
+		getCommand("unblind").setExecutor(new unBlind());
 		
 		Bukkit.getPluginManager().registerEvents(new Main_Event(this), this);
 		
