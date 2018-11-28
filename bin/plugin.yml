@@ -54,3 +54,5 @@ commands:
     description: "플레이어의 시야를 차단합니다."
   unblind:
     description: "플레이어의 시야 차단 효과를 제거합니다."
+  allowflight:
+    description: "모든 플레이어들의 비행을 허용/제한합니다."

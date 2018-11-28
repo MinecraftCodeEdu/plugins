@@ -6,6 +6,7 @@ import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.coala.coalaplugin.commands.AllowFlight;
 import com.coala.coalaplugin.commands.blind;
 import com.coala.coalaplugin.commands.chatPausedCommand;
 import com.coala.coalaplugin.commands.classDefaultCommand;
@@ -73,6 +74,7 @@ public class Main extends JavaPlugin {
 		getCommand("weatherPlayer").setExecutor(new weatherPlayer());
 		getCommand("blind").setExecutor(new blind());
 		getCommand("unblind").setExecutor(new unBlind());
+		getCommand("allowflight").setExecutor(new AllowFlight());
 		
 		Bukkit.getPluginManager().registerEvents(new Main_Event(this), this);
 		
